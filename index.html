@@ -257,6 +257,8 @@
             gap: 20px;
             justify-content: center;
             margin-top: 30px;
+            flex-direction: row;
+            align-items: center;
         }
 
         button {
@@ -269,6 +271,7 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            position: relative;
         }
 
         .btn-yes {
@@ -286,9 +289,7 @@
             background: transparent;
             color: #ff9ff3;
             border: 2px solid #ff9ff3;
-            position: fixed;
             box-shadow: 0 5px 20px rgba(255, 159, 243, 0.2);
-            z-index: 1001;
         }
 
         .btn-no:hover {
@@ -313,7 +314,47 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* Humo rosado animado */
+        /* Humo rosado inferior para la carta */
+        .bottom-pink-smoke {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .bottom-smoke-particle {
+            position: absolute;
+            width: 600px;
+            height: 400px;
+            background: radial-gradient(ellipse at center, rgba(255, 182, 193, 0.4) 0%, transparent 60%);
+            border-radius: 50%;
+            filter: blur(50px);
+            bottom: -200px;
+            animation: bottomSmokeMove 25s ease-in-out infinite;
+        }
+
+        @keyframes bottomSmokeMove {
+            0%, 100% {
+                transform: translateX(0) translateY(0) scale(1);
+                opacity: 0.3;
+            }
+            25% {
+                transform: translateX(200px) translateY(-50px) scale(1.3);
+                opacity: 0.2;
+            }
+            50% {
+                transform: translateX(-150px) translateY(-80px) scale(1.5);
+                opacity: 0.3;
+            }
+            75% {
+                transform: translateX(100px) translateY(-30px) scale(1.2);
+                opacity: 0.2;
+            }
+        }
         .pink-smoke {
             position: fixed;
             width: 100%;
@@ -378,6 +419,16 @@
             margin-bottom: 15px;
             filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
             text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+            animation: goldShimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes goldShimmer {
+            0%, 100% {
+                filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1)) brightness(1);
+            }
+            50% {
+                filter: drop-shadow(2px 2px 8px rgba(255, 215, 0, 0.5)) brightness(1.2);
+            }
         }
 
         .date {
@@ -863,6 +914,12 @@
             <div class="smoke-particle" style="top: 80%; left: 20%; animation-delay: 10s;"></div>
             <div class="smoke-particle" style="top: 20%; left: 80%; animation-delay: 15s;"></div>
         </div>
+        <div class="bottom-pink-smoke">
+            <div class="bottom-smoke-particle" style="left: -10%; animation-delay: 0s;"></div>
+            <div class="bottom-smoke-particle" style="left: 30%; animation-delay: 8s;"></div>
+            <div class="bottom-smoke-particle" style="left: 60%; animation-delay: 16s;"></div>
+            <div class="bottom-smoke-particle" style="left: 90%; animation-delay: 24s;"></div>
+        </div>
         <div class="letter-content">
             <div class="letter-header">
                 <h1>Para Mi Futura Esposa</h1>
@@ -881,7 +938,7 @@
                 <!-- Las fotos se generarán dinámicamente -->
             </div>
 
-            <p style="text-align: center; font-size: 28px; color: #ff6b9d; margin-top: 50px; font-family: 'Playfair Display', serif; font-style: italic;">
+            <p style="text-align: center; font-size: 28px; background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-top: 50px; font-family: 'Playfair Display', serif; font-style: italic; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3)); text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);">
                 Feliz Mesario mi Preciosa, espero te haya gustado. TE AMO
             </p>
         </div>
@@ -1215,7 +1272,7 @@
             // Limpiar después de la animación
             setTimeout(() => {
                 confettiContainer.innerHTML = '';
-            }, 8000); // Más tiempo antes de limpiar
+            }, 5000); // Tiempo ajustado para la animación más rápida
         }
 
         // Abrir modal de foto con animación de expansión
@@ -1347,8 +1404,16 @@
         // Función mejorada para hacer que el botón "No" se escape por toda la pantalla
         function makeButtonEscape(buttonId) {
             const button = document.getElementById(buttonId);
+            let isFirstTime = true;
             
             function moveButton() {
+                if (isFirstTime) {
+                    // En el primer intento, solo se mueve a position fixed
+                    button.style.position = 'fixed';
+                    button.style.zIndex = '1001';
+                    isFirstTime = false;
+                }
+                
                 // Obtener dimensiones de la ventana
                 const windowWidth = window.innerWidth;
                 const windowHeight = window.innerHeight;
@@ -1361,10 +1426,8 @@
                 const randomX = Math.random() * maxX + 10;
                 const randomY = Math.random() * maxY + 10;
                 
-                button.style.position = 'fixed';
                 button.style.left = randomX + 'px';
                 button.style.top = randomY + 'px';
-                button.style.zIndex = '1001';
                 button.classList.add('escape');
             }
             
