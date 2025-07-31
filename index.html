@@ -320,7 +320,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 70%;
+            height: 100%;
             pointer-events: none;
             overflow: hidden;
             z-index: 10;
@@ -330,9 +330,9 @@
             position: absolute;
             width: 800px;
             height: 600px;
-            background: radial-gradient(ellipse at center, rgba(255, 182, 193, 0.15) 0%, rgba(255, 192, 203, 0.1) 40%, transparent 70%);
+            background: radial-gradient(ellipse at center, rgba(255, 182, 193, 0.5) 0%, rgba(255, 192, 203, 0.35) 40%, transparent 70%);
             border-radius: 50%;
-            filter: blur(40px);
+            filter: blur(25px);
             bottom: -300px;
             animation: bottomSmokeMove 20s ease-in-out infinite;
         }
@@ -343,16 +343,16 @@
                 opacity: 1;
             }
             25% {
-                transform: translateX(150px) translateY(-30px) scale(1.2);
-                opacity: 0.9;
+                transform: translateX(200px) translateY(-200px) scale(1.3);
+                opacity: 1;
             }
             50% {
-                transform: translateX(-100px) translateY(-50px) scale(1.3);
+                transform: translateX(-150px) translateY(-400px) scale(1.5);
                 opacity: 1;
             }
             75% {
-                transform: translateX(80px) translateY(-20px) scale(1.1);
-                opacity: 0.9;
+                transform: translateX(100px) translateY(-100px) scale(1.2);
+                opacity: 1;
             }
         }
         .pink-smoke {
@@ -915,10 +915,11 @@
             <div class="smoke-particle" style="top: 20%; left: 80%; animation-delay: 15s;"></div>
         </div>
         <div class="bottom-pink-smoke">
-            <div class="bottom-smoke-particle" style="left: -10%; animation-delay: 0s;"></div>
-            <div class="bottom-smoke-particle" style="left: 30%; animation-delay: 8s;"></div>
-            <div class="bottom-smoke-particle" style="left: 60%; animation-delay: 16s;"></div>
-            <div class="bottom-smoke-particle" style="left: 90%; animation-delay: 24s;"></div>
+            <div class="bottom-smoke-particle" style="left: -20%; bottom: -100px; animation-delay: 0s;"></div>
+            <div class="bottom-smoke-particle" style="left: 10%; bottom: -200px; animation-delay: 4s;"></div>
+            <div class="bottom-smoke-particle" style="left: 40%; bottom: -150px; animation-delay: 8s;"></div>
+            <div class="bottom-smoke-particle" style="left: 70%; bottom: -250px; animation-delay: 12s;"></div>
+            <div class="bottom-smoke-particle" style="left: 90%; bottom: -100px; animation-delay: 16s;"></div>
         </div>
         <div class="letter-content">
             <div class="letter-header">
