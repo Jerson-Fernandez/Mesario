@@ -451,20 +451,63 @@
         .confetti-heart {
             position: absolute;
             font-size: 30px;
-            animation: fall 3s ease-out forwards;
             filter: drop-shadow(0 0 10px rgba(255, 107, 157, 0.8));
+            pointer-events: none;
         }
 
-        @keyframes fall {
+        .confetti-heart.firework {
+            animation: firework 2s ease-out forwards;
+        }
+
+        @keyframes firework {
             0% {
-                transform: translateY(0) translateX(0) rotate(0deg) scale(0);
-                opacity: 1;
+                transform: translate(0, 0) scale(0);
+                opacity: 0;
             }
-            10% {
-                transform: translateY(-50px) translateX(0) rotate(45deg) scale(1.5);
+            20% {
+                opacity: 1;
+                transform: translate(var(--tx), var(--ty)) scale(0.5);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(calc(var(--tx) * 1.5), calc(var(--ty) * 1.5)) scale(1.2);
             }
             100% {
-                transform: translateY(calc(100vh + 100px)) translateX(var(--tx)) rotate(var(--rotation)) scale(0.8);
+                opacity: 0;
+                transform: translate(calc(var(--tx) * 2), calc(var(--ty) * 2 + 100px)) scale(0.3) rotate(var(--rotation));
+            }
+        }
+
+        /* Lluvia de corazones mejorada */
+        .heart-rain {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .rain-heart {
+            position: absolute;
+            color: rgba(255, 107, 157, 0.6);
+            animation: rainFall linear infinite;
+            font-size: 20px;
+        }
+
+        @keyframes rainFall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(calc(100vh + 100px)) rotate(360deg);
                 opacity: 0;
             }
         }
@@ -583,6 +626,9 @@
     <div class="hearts-bg" id="heartsBg"></div>
     <div class="heart-confetti" id="heartConfetti"></div>
     
+    <!-- Lluvia de corazones para la pantalla principal -->
+    <div class="heart-rain" id="mainHeartRain"></div>
+    
     <div class="container" id="mainContainer" class="hidden">
         <div class="envelope" id="envelope">
             <div class="envelope-body"></div>
@@ -623,6 +669,9 @@
 
     <!-- Carta -->
     <div class="letter-container" id="letterContainer">
+        <!-- Lluvia de corazones para la carta -->
+        <div class="heart-rain" id="letterHeartRain"></div>
+        
         <div class="letter-content">
             <div class="letter-header">
                 <h1>Para Mi Amorcita Linda Preciosa ❤️</h1>
@@ -697,6 +746,9 @@
             document.getElementById('fullscreenPrompt').classList.add('hidden');
             document.getElementById('mainContainer').classList.remove('hidden');
             
+            // Iniciar lluvia de corazones en la pantalla principal
+            startHeartRain('mainHeartRain');
+            
             // Si es una PWA, iniciar directamente
             if (isInStandaloneMode()) {
                 console.log('Ejecutando como PWA');
@@ -751,11 +803,53 @@
             deferredPrompt = null;
         }
 
+        // Función para crear lluvia de corazones
+        function startHeartRain(containerId) {
+            const container = document.getElementById(containerId);
+            const hearts = ['❤️', '💕', '💖', '💗', '💝', '💓', '💞'];
+            
+            // Crear corazones iniciales
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => createRainHeart(container, hearts), i * 300);
+            }
+            
+            // Continuar creando corazones
+            setInterval(() => {
+                createRainHeart(container, hearts);
+            }, 2000);
+        }
+
+        function createRainHeart(container, hearts) {
+            const heart = document.createElement('div');
+            heart.className = 'rain-heart';
+            heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+            
+            // Posición aleatoria en X
+            heart.style.left = Math.random() * window.innerWidth + 'px';
+            
+            // Tamaño aleatorio
+            heart.style.fontSize = (Math.random() * 15 + 10) + 'px';
+            
+            // Duración aleatoria
+            heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            
+            // Opacidad aleatoria
+            heart.style.opacity = Math.random() * 0.4 + 0.2;
+            
+            container.appendChild(heart);
+            
+            // Remover después de la animación
+            setTimeout(() => {
+                heart.remove();
+            }, 7000);
+        }
+
         // Si la página se abre directamente (sin pantalla de bienvenida)
         if (isInStandaloneMode()) {
             window.addEventListener('load', () => {
                 document.getElementById('fullscreenPrompt').classList.add('hidden');
                 document.getElementById('mainContainer').classList.remove('hidden');
+                startHeartRain('mainHeartRain');
             });
         }
 
@@ -897,7 +991,7 @@
             });
         }
 
-        // Crear efecto de confeti de corazones mejorado
+        // Crear efecto de confeti de corazones tipo fuegos artificiales
         function createHeartConfetti(x, y, type = 'normal') {
             const confettiContainer = document.getElementById('heartConfetti');
             const hearts = ['❤️', '💕', '💖', '💗', '💝', '💓', '💞', '💘', '💌', '❣️', '♥️'];
@@ -905,39 +999,72 @@
             // Limpiar confeti anterior
             confettiContainer.innerHTML = '';
             
-            const numHearts = type === 'explosion' ? 50 : 30;
+            const numHearts = type === 'explosion' ? 40 : 25;
             
             for (let i = 0; i < numHearts; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'confetti-heart firework';
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                
+                // Posición inicial en el centro del click
+                heart.style.left = x + 'px';
+                heart.style.top = y + 'px';
+                heart.style.fontSize = (Math.random() * 30 + 15) + 'px';
+                
+                // Calcular dirección radial para efecto de fuegos artificiales
+                const angle = (Math.PI * 2 * i) / numHearts + (Math.random() * 0.5 - 0.25);
+                const distance = type === 'explosion' ? 
+                    Math.random() * 150 + 100 : 
+                    Math.random() * 100 + 50;
+                const rotationSpeed = Math.random() * 720 - 360;
+                
+                // Aplicar variables CSS para la animación
+                heart.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+                heart.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+                heart.style.setProperty('--rotation', rotationSpeed + 'deg');
+                
+                // Color aleatorio con más brillo
+                const colors = ['#ff6b9d', '#ee5a6f', '#ff4757', '#ff9ff3', '#feca57', '#ff6348', '#ee5a24'];
+                heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Agregar efecto de brillo
+                heart.style.filter = `drop-shadow(0 0 ${Math.random() * 15 + 5}px rgba(255, 107, 157, 0.8))`;
+                
+                confettiContainer.appendChild(heart);
+                
+                // Eliminar después de la animación
+                setTimeout(() => heart.remove(), 2000);
+            }
+            
+            // Crear segunda oleada de explosión para más realismo
+            if (type === 'explosion') {
                 setTimeout(() => {
-                    const heart = document.createElement('div');
-                    heart.className = 'confetti-heart';
-                    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-                    
-                    // Posición inicial en el centro del click
-                    heart.style.left = x + 'px';
-                    heart.style.top = y + 'px';
-                    heart.style.fontSize = (Math.random() * 35 + 20) + 'px';
-                    
-                    // Calcular dirección de explosión
-                    const angle = (Math.PI * 2 * i) / numHearts;
-                    const velocity = type === 'explosion' ? 
-                        Math.random() * 400 + 200 : 
-                        Math.random() * 300 + 100;
-                    const rotationSpeed = Math.random() * 720 - 360;
-                    
-                    // Aplicar variables CSS para la animación
-                    heart.style.setProperty('--tx', Math.cos(angle) * velocity + 'px');
-                    heart.style.setProperty('--rotation', rotationSpeed + 'deg');
-                    
-                    // Color aleatorio para más variedad
-                    const colors = ['#ff6b9d', '#ee5a6f', '#ff4757', '#ff9ff3', '#feca57'];
-                    heart.style.color = colors[Math.floor(Math.random() * colors.length)];
-                    
-                    confettiContainer.appendChild(heart);
-                    
-                    // Eliminar después de la animación
-                    setTimeout(() => heart.remove(), 3000);
-                }, i * 20); // Retraso escalonado para efecto de explosión
+                    for (let i = 0; i < 20; i++) {
+                        const heart = document.createElement('div');
+                        heart.className = 'confetti-heart firework';
+                        heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                        
+                        heart.style.left = x + 'px';
+                        heart.style.top = y + 'px';
+                        heart.style.fontSize = (Math.random() * 25 + 10) + 'px';
+                        
+                        const angle = (Math.PI * 2 * i) / 20;
+                        const distance = Math.random() * 200 + 150;
+                        const rotationSpeed = Math.random() * 1080 - 540;
+                        
+                        heart.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+                        heart.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+                        heart.style.setProperty('--rotation', rotationSpeed + 'deg');
+                        
+                        const colors = ['#ff6b9d', '#feca57', '#48dbfb', '#ff9ff3'];
+                        heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+                        heart.style.filter = `drop-shadow(0 0 20px ${colors[Math.floor(Math.random() * colors.length)]})`;
+                        
+                        confettiContainer.appendChild(heart);
+                        
+                        setTimeout(() => heart.remove(), 2000);
+                    }
+                }, 100);
             }
         }
 
@@ -1037,6 +1164,9 @@
                 document.getElementById('letterContainer').style.display = 'block';
                 createPhotoGallery();
                 createFloatingHearts();
+                
+                // Iniciar lluvia de corazones en la carta
+                startHeartRain('letterHeartRain');
                 
                 const music1 = document.getElementById('backgroundMusic1');
                 const music2 = document.getElementById('backgroundMusic2');
