@@ -439,23 +439,32 @@
 
         .heart-confetti {
             position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
-            z-index: 6000;
+            z-index: 10000;
+            overflow: hidden;
         }
 
         .confetti-heart {
             position: absolute;
-            font-size: 20px;
-            animation: fall 3s linear forwards;
+            font-size: 30px;
+            animation: fall 3s ease-out forwards;
+            filter: drop-shadow(0 0 10px rgba(255, 107, 157, 0.8));
         }
 
         @keyframes fall {
             0% {
-                transform: translateY(0) rotate(0deg);
+                transform: translateY(0) translateX(0) rotate(0deg) scale(0);
                 opacity: 1;
             }
+            10% {
+                transform: translateY(-50px) translateX(0) rotate(45deg) scale(1.5);
+            }
             100% {
-                transform: translateY(100vh) translateX(var(--tx)) rotate(var(--rotation));
+                transform: translateY(calc(100vh + 100px)) translateX(var(--tx)) rotate(var(--rotation)) scale(0.8);
                 opacity: 0;
             }
         }
@@ -640,7 +649,7 @@
 
     <!-- Modal para fotos ampliadas -->
     <div class="photo-modal" id="photoModal">
-        <div class="modal-photo-container" onclick="handleModalClick()">
+        <div class="modal-photo-container" onclick="handleModalClick(event)">
             <div class="modal-photo-flip" id="photoFlip">
                 <div class="modal-photo-front">
                     <img id="modalImage" src="" alt="">
@@ -872,38 +881,63 @@
                     <img src="${recuerdo.foto}" alt="Foto ${index + 1}" 
                          onerror="this.src='https://via.placeholder.com/300x400/FF6B6B/FFFFFF?text=Foto+${index + 1}'">
                 `;
-                photoItem.onclick = function() {
-                    openPhotoModal(index);
+                photoItem.onclick = function(e) {
+                    // Crear explosión de corazones en el punto del click
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    createHeartConfetti(centerX, centerY, 'explosion');
+                    
+                    // Abrir modal después de un pequeño retraso
+                    setTimeout(() => {
+                        openPhotoModal(index);
+                    }, 200);
                 };
                 gallery.appendChild(photoItem);
             });
         }
 
-        // Crear efecto de confeti de corazones
-        function createHeartConfetti(x, y) {
+        // Crear efecto de confeti de corazones mejorado
+        function createHeartConfetti(x, y, type = 'normal') {
             const confettiContainer = document.getElementById('heartConfetti');
-            const hearts = ['❤️', '💕', '💖', '💗', '💝', '💓', '💞', '💘', '💌', '❣️'];
+            const hearts = ['❤️', '💕', '💖', '💗', '💝', '💓', '💞', '💘', '💌', '❣️', '♥️'];
             
-            for (let i = 0; i < 30; i++) {
-                const heart = document.createElement('div');
-                heart.className = 'confetti-heart';
-                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-                heart.style.left = x + 'px';
-                heart.style.top = y + 'px';
-                heart.style.fontSize = (Math.random() * 25 + 15) + 'px';
-                
-                const angle = (Math.PI * 2 * i) / 30;
-                const velocity = Math.random() * 200 + 100;
-                const rotationSpeed = Math.random() * 720 - 360;
-                
-                heart.style.setProperty('--tx', Math.cos(angle) * velocity + 'px');
-                heart.style.setProperty('--rotation', rotationSpeed + 'deg');
-                
-                heart.style.animation = `fall ${Math.random() * 2 + 2}s ease-out forwards`;
-                
-                confettiContainer.appendChild(heart);
-                
-                setTimeout(() => heart.remove(), 4000);
+            // Limpiar confeti anterior
+            confettiContainer.innerHTML = '';
+            
+            const numHearts = type === 'explosion' ? 50 : 30;
+            
+            for (let i = 0; i < numHearts; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'confetti-heart';
+                    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                    
+                    // Posición inicial en el centro del click
+                    heart.style.left = x + 'px';
+                    heart.style.top = y + 'px';
+                    heart.style.fontSize = (Math.random() * 35 + 20) + 'px';
+                    
+                    // Calcular dirección de explosión
+                    const angle = (Math.PI * 2 * i) / numHearts;
+                    const velocity = type === 'explosion' ? 
+                        Math.random() * 400 + 200 : 
+                        Math.random() * 300 + 100;
+                    const rotationSpeed = Math.random() * 720 - 360;
+                    
+                    // Aplicar variables CSS para la animación
+                    heart.style.setProperty('--tx', Math.cos(angle) * velocity + 'px');
+                    heart.style.setProperty('--rotation', rotationSpeed + 'deg');
+                    
+                    // Color aleatorio para más variedad
+                    const colors = ['#ff6b9d', '#ee5a6f', '#ff4757', '#ff9ff3', '#feca57'];
+                    heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    confettiContainer.appendChild(heart);
+                    
+                    // Eliminar después de la animación
+                    setTimeout(() => heart.remove(), 3000);
+                }, i * 20); // Retraso escalonado para efecto de explosión
             }
         }
 
@@ -924,12 +958,13 @@
             
             modal.classList.add('active');
             
+            // Crear explosión de corazones cuando se abre el modal
             setTimeout(() => {
                 const rect = modal.querySelector('.modal-photo-container').getBoundingClientRect();
                 const centerX = rect.left + rect.width / 2;
                 const centerY = rect.top + rect.height / 2;
-                createHeartConfetti(centerX, centerY);
-            }, 100);
+                createHeartConfetti(centerX, centerY, 'explosion');
+            }, 300);
             
             hint.style.animation = 'fadeInOut 3s ease-in-out';
             setTimeout(() => {
@@ -938,16 +973,18 @@
         }
 
         // Manejar click en el modal
-        function handleModalClick() {
+        function handleModalClick(e) {
             const flip = document.getElementById('photoFlip');
             
             if (!isFlipped) {
                 flip.classList.add('flipped');
                 isFlipped = true;
                 
-                const modal = document.getElementById('photoModal');
-                const rect = modal.getBoundingClientRect();
-                createHeartConfetti(rect.width / 2, rect.height / 2);
+                // Crear mega explosión de corazones al voltear
+                const rect = e.currentTarget.getBoundingClientRect();
+                const clickX = e.clientX || rect.left + rect.width / 2;
+                const clickY = e.clientY || rect.top + rect.height / 2;
+                createHeartConfetti(clickX, clickY, 'explosion');
             } else {
                 closePhotoModal();
             }
