@@ -127,66 +127,79 @@
             z-index: 2;
         }
 
-        /* Corazón principal en lugar del sobre */
-        .heart-container {
+        /* Carta inicial */
+        .envelope-container {
             position: relative;
-            width: 250px;
-            height: 250px;
+            width: 300px;
+            height: 200px;
             margin: 0 auto;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
-        .heart-container:hover {
-            transform: scale(1.1);
-        }
-
-        .main-heart {
+        .envelope {
             width: 100%;
             height: 100%;
+            background: linear-gradient(135deg, #fff 0%, #ffeaa7 100%);
             position: relative;
-            transform: rotate(-45deg);
-            animation: heartPulse 2s ease-in-out infinite;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-radius: 10px;
         }
 
-        .main-heart::before,
-        .main-heart::after {
+        .envelope::before {
             content: '';
-            width: 200px;
-            height: 300px;
             position: absolute;
-            left: 100px;
             top: 0;
-            background: linear-gradient(135deg, #ff6b9d 0%, #ff9ff3 100%);
-            border-radius: 100px 100px 0 0;
-            transform: rotate(-45deg);
-            transform-origin: 0 100%;
-            box-shadow: 0 20px 60px rgba(255, 107, 157, 0.4);
-        }
-
-        .main-heart::after {
             left: 0;
-            transform: rotate(45deg);
-            transform-origin: 100% 100%;
-            background: linear-gradient(135deg, #ff9ff3 0%, #ff6b9d 100%);
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 100px solid #f8e5a0;
+            transform-origin: top;
+            transition: transform 0.6s ease;
+            z-index: 5;
         }
 
-        @keyframes heartPulse {
-            0%, 100% { transform: rotate(-45deg) scale(1); }
-            50% { transform: rotate(-45deg) scale(1.1); }
-        }
-
-        .heart-text {
+        .envelope-heart {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            width: 60px;
+            height: 60px;
             z-index: 10;
-            pointer-events: none;
+            animation: heartBeat 1.5s ease-in-out infinite;
+        }
+
+        .envelope-heart::before,
+        .envelope-heart::after {
+            content: '';
+            width: 40px;
+            height: 60px;
+            position: absolute;
+            left: 30px;
+            top: 0;
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff9ff3 100%);
+            border-radius: 30px 30px 0 0;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+            box-shadow: 0 5px 15px rgba(255, 107, 157, 0.4);
+        }
+
+        .envelope-heart::after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        .envelope-container:hover .envelope::before {
+            transform: rotateX(180deg);
         }
 
         .modal {
@@ -214,6 +227,7 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.5);
             border: 1px solid rgba(255, 107, 157, 0.3);
             position: relative;
+            overflow: hidden;
         }
 
         @keyframes modalSlideIn {
@@ -229,12 +243,13 @@
 
         .modal h2 {
             font-family: 'Playfair Display', serif;
-            background: linear-gradient(45deg, #ff6b9d, #ff9ff3);
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 25px;
             font-size: 26px;
             filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
         }
 
         .button-group {
@@ -290,21 +305,62 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+            background: #ffffff;
             z-index: 2000;
             overflow-y: auto;
             padding: 20px;
             -webkit-overflow-scrolling: touch;
         }
 
+        /* Humo rosado animado */
+        .pink-smoke {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .smoke-particle {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 182, 193, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(40px);
+            animation: smokeMove 20s ease-in-out infinite;
+        }
+
+        @keyframes smokeMove {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.3;
+            }
+            25% {
+                transform: translate(100px, -150px) scale(1.5);
+                opacity: 0.2;
+            }
+            50% {
+                transform: translate(-150px, -100px) scale(1.2);
+                opacity: 0.3;
+            }
+            75% {
+                transform: translate(-100px, 100px) scale(1.3);
+                opacity: 0.2;
+            }
+        }
+
         .letter-content {
             max-width: 900px;
             margin: 0 auto;
-            background: linear-gradient(135deg, #f8f9fa 0%, #ffe0ec 100%);
+            background: rgba(255, 255, 255, 0.95);
             padding: 50px;
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255, 107, 157, 0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 107, 157, 0.2);
+            position: relative;
+            z-index: 2;
         }
 
         .letter-header {
@@ -314,12 +370,13 @@
 
         .letter-header h1 {
             font-family: 'Playfair Display', serif;
-            background: linear-gradient(135deg, #ff6b9d 0%, #ff9ff3 50%, #ff6b9d 100%);
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-size: 42px;
             margin-bottom: 15px;
             filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1));
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
         }
 
         .date {
@@ -334,12 +391,14 @@
             color: #212529;
             font-size: 18px;
             margin-bottom: 50px;
+            text-align: justify;
         }
 
         .letter-body p {
             margin-bottom: 25px;
             opacity: 0;
             animation: elegantFadeIn 1s ease forwards;
+            text-align: justify;
         }
 
         @keyframes elegantFadeIn {
@@ -490,7 +549,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255, 107, 157, 0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
             animation: elegantShimmer 4s linear infinite;
         }
 
@@ -501,11 +560,13 @@
 
         .modal-message {
             font-family: 'Playfair Display', serif;
-            color: #ff9ff3;
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             text-align: center;
             font-size: 28px;
             font-weight: 400;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.5));
             line-height: 1.8;
             font-style: italic;
             position: relative;
@@ -561,31 +622,23 @@
 
         .confetti-heart {
             position: absolute;
-            font-size: 30px;
-            filter: drop-shadow(0 0 10px rgba(255, 107, 157, 0.8));
+            font-size: 20px;
+            filter: drop-shadow(0 0 5px rgba(255, 107, 157, 0.6));
             pointer-events: none;
         }
 
-        .confetti-heart.firework {
-            animation: elegantFirework 2.5s ease-out forwards;
+        .confetti-heart.falling {
+            animation: heartFall 3s ease-out forwards;
         }
 
-        @keyframes elegantFirework {
+        @keyframes heartFall {
             0% {
-                transform: translate(0, 0) scale(0);
-                opacity: 0;
-            }
-            20% {
+                transform: translateY(0) scale(1);
                 opacity: 1;
-                transform: translate(var(--tx), var(--ty)) scale(0.5);
-            }
-            50% {
-                opacity: 1;
-                transform: translate(calc(var(--tx) * 1.5), calc(var(--ty) * 1.5)) scale(1.2);
             }
             100% {
+                transform: translateY(500px) scale(0.5);
                 opacity: 0;
-                transform: translate(calc(var(--tx) * 2), calc(var(--ty) * 2 + 100px)) scale(0.3) rotate(var(--rotation));
             }
         }
 
@@ -700,21 +753,15 @@
                 height: 70vh;
             }
 
-            .heart-container {
-                width: 200px;
-                height: 200px;
+            .envelope-container {
+                width: 250px;
+                height: 167px;
             }
 
-            .main-heart::before,
-            .main-heart::after {
-                width: 160px;
-                height: 240px;
-                left: 80px;
-                border-radius: 80px 80px 0 0;
-            }
-
-            .main-heart::after {
-                left: 0;
+            .envelope::before {
+                border-left: 125px solid transparent;
+                border-right: 125px solid transparent;
+                border-top: 83px solid #f8e5a0;
             }
         }
 
@@ -738,9 +785,9 @@
     <div class="heart-confetti" id="heartConfetti"></div>
     
     <div class="container" id="mainContainer" class="hidden">
-        <div class="heart-container" id="heartContainer">
-            <div class="main-heart"></div>
-            <div class="heart-text">Click Me</div>
+        <div class="envelope-container" id="envelopeContainer">
+            <div class="envelope"></div>
+            <div class="envelope-heart"></div>
         </div>
     </div>
 
@@ -776,9 +823,15 @@
 
     <!-- Carta -->
     <div class="letter-container" id="letterContainer">
+        <div class="pink-smoke">
+            <div class="smoke-particle" style="top: 10%; left: 10%; animation-delay: 0s;"></div>
+            <div class="smoke-particle" style="top: 50%; left: 70%; animation-delay: 5s;"></div>
+            <div class="smoke-particle" style="top: 80%; left: 20%; animation-delay: 10s;"></div>
+            <div class="smoke-particle" style="top: 20%; left: 80%; animation-delay: 15s;"></div>
+        </div>
         <div class="letter-content">
             <div class="letter-header">
-                <h1>Para Mi Amada</h1>
+                <h1>Para Mi Futura Esposa</h1>
                 <p class="date">1 Año y 10 Meses de Amor Eterno</p>
             </div>
             
@@ -1059,10 +1112,10 @@
                     // Guardar la posición del elemento clickeado
                     clickedPhotoRect = e.currentTarget.getBoundingClientRect();
                     
-                    // Crear explosión de corazones en el punto del click
+                    // Crear corazones pequeños cayendo
                     const centerX = clickedPhotoRect.left + clickedPhotoRect.width / 2;
                     const centerY = clickedPhotoRect.top + clickedPhotoRect.height / 2;
-                    createHeartConfetti(centerX, centerY, 'explosion');
+                    createFallingHearts(centerX, centerY);
                     
                     // Abrir modal después de un pequeño retraso
                     setTimeout(() => {
@@ -1073,46 +1126,37 @@
             });
         }
 
-        // Crear efecto de confeti de corazones tipo fuegos artificiales
-        function createHeartConfetti(x, y, type = 'normal') {
+        // Crear corazones cayendo con desvanecimiento
+        function createFallingHearts(x, y) {
             const confettiContainer = document.getElementById('heartConfetti');
             const hearts = ['💖', '💕', '💗', '💝', '💘'];
             
             // Limpiar confeti anterior
             confettiContainer.innerHTML = '';
             
-            const numHearts = type === 'explosion' ? 30 : 20;
-            
-            for (let i = 0; i < numHearts; i++) {
+            for (let i = 0; i < 15; i++) {
                 const heart = document.createElement('div');
-                heart.className = 'confetti-heart firework';
+                heart.className = 'confetti-heart falling';
                 heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
                 
-                // Posición inicial en el centro del click
-                heart.style.left = x + 'px';
-                heart.style.top = y + 'px';
-                heart.style.fontSize = (Math.random() * 25 + 15) + 'px';
-                
-                // Calcular dirección radial para efecto de fuegos artificiales
-                const angle = (Math.PI * 2 * i) / numHearts + (Math.random() * 0.5 - 0.25);
-                const distance = type === 'explosion' ? 
-                    Math.random() * 200 + 100 : 
-                    Math.random() * 150 + 50;
-                const rotationSpeed = Math.random() * 720 - 360;
-                
-                // Aplicar variables CSS para la animación
-                heart.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
-                heart.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
-                heart.style.setProperty('--rotation', rotationSpeed + 'deg');
+                // Posición inicial dispersa alrededor del punto de click
+                const offsetX = (Math.random() - 0.5) * 100;
+                const offsetY = (Math.random() - 0.5) * 50;
+                heart.style.left = (x + offsetX) + 'px';
+                heart.style.top = (y + offsetY) + 'px';
+                heart.style.fontSize = (Math.random() * 10 + 15) + 'px';
                 
                 // Color rosado
                 heart.style.color = '#ff6b9d';
-                heart.style.filter = `drop-shadow(0 0 ${Math.random() * 20 + 10}px rgba(255, 107, 157, 0.8))`;
+                heart.style.filter = `drop-shadow(0 0 ${Math.random() * 5 + 5}px rgba(255, 107, 157, 0.6))`;
+                
+                // Retraso aleatorio
+                heart.style.animationDelay = Math.random() * 0.5 + 's';
                 
                 confettiContainer.appendChild(heart);
                 
                 // Eliminar después de la animación
-                setTimeout(() => heart.remove(), 2500);
+                setTimeout(() => heart.remove(), 3500);
             }
         }
 
@@ -1131,52 +1175,14 @@
             image.src = misRecuerdos[index].foto;
             message.textContent = misRecuerdos[index].mensaje;
             
-            // Configurar la animación de expansión desde la posición original
-            if (clickedPhotoRect) {
-                const modalRect = {
-                    width: window.innerWidth * 0.9,
-                    height: window.innerHeight * 0.85,
-                    left: window.innerWidth * 0.05,
-                    top: window.innerHeight * 0.075
-                };
-                
-                // Establecer la posición inicial
-                container.style.animation = 'none';
-                container.style.width = clickedPhotoRect.width + 'px';
-                container.style.height = clickedPhotoRect.height + 'px';
-                container.style.position = 'fixed';
-                container.style.left = clickedPhotoRect.left + 'px';
-                container.style.top = clickedPhotoRect.top + 'px';
-                container.style.transform = 'scale(1)';
-                
-                modal.classList.add('active');
-                
-                // Forzar reflow
-                container.offsetHeight;
-                
-                // Animar a la posición final
-                container.style.transition = 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
-                container.style.width = '';
-                container.style.height = '';
-                container.style.position = '';
-                container.style.left = '';
-                container.style.top = '';
-                container.style.transform = '';
-                
-                setTimeout(() => {
-                    container.style.transition = '';
-                    container.style.animation = '';
-                }, 600);
-            } else {
-                modal.classList.add('active');
-            }
+            modal.classList.add('active');
             
-            // Crear explosión de corazones cuando se abre el modal
+            // Crear corazones cayendo cuando se abre el modal
             setTimeout(() => {
                 const rect = container.getBoundingClientRect();
                 const centerX = rect.left + rect.width / 2;
                 const centerY = rect.top + rect.height / 2;
-                createHeartConfetti(centerX, centerY, 'explosion');
+                createFallingHearts(centerX, centerY);
             }, 400);
         }
 
@@ -1191,11 +1197,11 @@
                 flip.classList.add('flipped');
                 isFlipped = true;
                 
-                // Crear mega explosión de corazones al voltear
+                // Crear corazones cayendo al voltear
                 const rect = e.currentTarget.getBoundingClientRect();
                 const clickX = e.clientX || rect.left + rect.width / 2;
                 const clickY = e.clientY || rect.top + rect.height / 2;
-                createHeartConfetti(clickX, clickY, 'explosion');
+                createFallingHearts(clickX, clickY);
             } else {
                 closePhotoModal();
             }
@@ -1206,24 +1212,18 @@
             const modal = document.getElementById('photoModal');
             const container = document.querySelector('.modal-photo-container');
             
-            // Animar de vuelta a la posición original si tenemos la referencia
-            if (clickedPhotoRect) {
-                container.style.transition = 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-                container.style.transform = 'scale(0.8)';
-                container.style.opacity = '0';
-                
-                setTimeout(() => {
-                    modal.classList.remove('active');
-                    container.style.transition = '';
-                    container.style.transform = '';
-                    container.style.opacity = '';
-                    isFlipped = false;
-                    clickedPhotoRect = null;
-                }, 400);
-            } else {
+            container.style.transition = 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+            container.style.transform = 'scale(0.8)';
+            container.style.opacity = '0';
+            
+            setTimeout(() => {
                 modal.classList.remove('active');
+                container.style.transition = '';
+                container.style.transform = '';
+                container.style.opacity = '';
                 isFlipped = false;
-            }
+                clickedPhotoRect = null;
+            }, 400);
         }
 
         // Reproducir música
@@ -1242,8 +1242,8 @@
             });
         }
 
-        // Eventos del corazón
-        document.getElementById('heartContainer').addEventListener('click', function() {
+        // Eventos del sobre/carta
+        document.getElementById('envelopeContainer').addEventListener('click', function() {
             document.getElementById('modal1').style.display = 'flex';
         });
 
@@ -1261,10 +1261,10 @@
         function openLetter() {
             document.getElementById('modal3').style.display = 'none';
             
-            // Animar el corazón antes de abrir la carta
-            const heart = document.getElementById('heartContainer');
-            heart.style.transform = 'scale(1.5)';
-            heart.style.opacity = '0';
+            // Animar el sobre antes de abrir la carta
+            const envelope = document.getElementById('envelopeContainer');
+            envelope.style.transform = 'scale(1.5)';
+            envelope.style.opacity = '0';
             
             setTimeout(() => {
                 document.getElementById('letterContainer').style.display = 'block';
@@ -1292,20 +1292,43 @@
                 const modalRect = modal.getBoundingClientRect();
                 const buttonRect = button.getBoundingClientRect();
                 
-                // Calcular límites seguros considerando el tamaño del modal y del botón
-                const safeZoneX = 40; // Margen desde los bordes
-                const safeZoneY = 80; // Margen mayor arriba para evitar el título
+                // Obtener todos los elementos de texto en el modal
+                const textElements = modal.querySelectorAll('h2, p');
+                const occupiedAreas = [];
                 
-                const maxX = modalRect.width - buttonRect.width - safeZoneX;
-                const maxY = modalRect.height - buttonRect.height - safeZoneY;
+                textElements.forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    occupiedAreas.push({
+                        left: rect.left - modalRect.left,
+                        right: rect.right - modalRect.left,
+                        top: rect.top - modalRect.top,
+                        bottom: rect.bottom - modalRect.top
+                    });
+                });
                 
-                // Generar posición aleatoria pero evitando el área del título
-                let randomX = Math.random() * maxX;
-                let randomY = Math.random() * maxY + safeZoneY;
+                // Intentar encontrar una posición válida
+                let validPosition = false;
+                let attempts = 0;
+                let randomX, randomY;
                 
-                // Asegurarse de que no se superponga con el título (parte superior del modal)
-                if (randomY < 100) {
-                    randomY = 100;
+                while (!validPosition && attempts < 50) {
+                    randomX = Math.random() * (modalRect.width - buttonRect.width);
+                    randomY = Math.random() * (modalRect.height - buttonRect.height);
+                    
+                    validPosition = true;
+                    
+                    // Verificar que no se superponga con el texto
+                    for (let area of occupiedAreas) {
+                        if (randomX < area.right && 
+                            randomX + buttonRect.width > area.left &&
+                            randomY < area.bottom && 
+                            randomY + buttonRect.height > area.top) {
+                            validPosition = false;
+                            break;
+                        }
+                    }
+                    
+                    attempts++;
                 }
                 
                 button.style.position = 'absolute';
