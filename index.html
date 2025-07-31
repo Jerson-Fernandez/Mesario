@@ -227,7 +227,7 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.5);
             border: 1px solid rgba(255, 107, 157, 0.3);
             position: relative;
-            overflow: hidden;
+            overflow: visible;
         }
 
         @keyframes modalSlideIn {
@@ -286,8 +286,9 @@
             background: transparent;
             color: #ff9ff3;
             border: 2px solid #ff9ff3;
-            position: relative;
+            position: fixed;
             box-shadow: 0 5px 20px rgba(255, 159, 243, 0.2);
+            z-index: 1001;
         }
 
         .btn-no:hover {
@@ -574,6 +575,12 @@
             max-width: 600px;
         }
 
+        .modal-message .emoji {
+            -webkit-text-fill-color: initial;
+            background: none;
+            font-style: normal;
+        }
+
         /* Partículas rosadas elegantes */
         .pink-particles {
             position: fixed;
@@ -631,6 +638,10 @@
             animation: heartFall 3s ease-out forwards;
         }
 
+        .confetti-heart.firework {
+            animation: heartFirework 4s ease-out forwards;
+        }
+
         @keyframes heartFall {
             0% {
                 transform: translateY(0) scale(1);
@@ -638,6 +649,29 @@
             }
             100% {
                 transform: translateY(500px) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes heartFirework {
+            0% {
+                transform: translate(0, 0) scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            5% {
+                transform: translate(0, 0) scale(0.5) rotate(45deg);
+                opacity: 1;
+            }
+            15% {
+                transform: translate(var(--tx1), var(--ty1)) scale(1) rotate(90deg);
+                opacity: 1;
+            }
+            30% {
+                transform: translate(calc(var(--tx1) * 1.2), calc(var(--ty1) * 1.2)) scale(1.1) rotate(180deg);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translate(var(--tx2), var(--ty2)) scale(0.3) rotate(720deg);
                 opacity: 0;
             }
         }
@@ -1112,52 +1146,76 @@
                     // Guardar la posición del elemento clickeado
                     clickedPhotoRect = e.currentTarget.getBoundingClientRect();
                     
-                    // Crear corazones pequeños cayendo
-                    const centerX = clickedPhotoRect.left + clickedPhotoRect.width / 2;
-                    const centerY = clickedPhotoRect.top + clickedPhotoRect.height / 2;
-                    createFallingHearts(centerX, centerY);
-                    
-                    // Abrir modal después de un pequeño retraso
-                    setTimeout(() => {
-                        openPhotoModal(index);
-                    }, 200);
+                    // Abrir modal directamente
+                    openPhotoModal(index);
                 };
                 gallery.appendChild(photoItem);
             });
         }
 
-        // Crear corazones cayendo con desvanecimiento
-        function createFallingHearts(x, y) {
+        function createFireworkHearts() {
             const confettiContainer = document.getElementById('heartConfetti');
-            const hearts = ['💖', '💕', '💗', '💝', '💘'];
+            const hearts = ['💖', '💕', '💗', '💝', '💘', '❤️', '💞', '💓'];
             
             // Limpiar confeti anterior
             confettiContainer.innerHTML = '';
             
-            for (let i = 0; i < 15; i++) {
-                const heart = document.createElement('div');
-                heart.className = 'confetti-heart falling';
-                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+            // Crear múltiples explosiones en diferentes puntos
+            const numExplosions = 7; // Más explosiones
+            
+            for (let e = 0; e < numExplosions; e++) {
+                // Posición aleatoria para cada explosión
+                const explosionX = Math.random() * window.innerWidth;
+                const explosionY = Math.random() * (window.innerHeight * 0.6); // 60% superior
                 
-                // Posición inicial dispersa alrededor del punto de click
-                const offsetX = (Math.random() - 0.5) * 100;
-                const offsetY = (Math.random() - 0.5) * 50;
-                heart.style.left = (x + offsetX) + 'px';
-                heart.style.top = (y + offsetY) + 'px';
-                heart.style.fontSize = (Math.random() * 10 + 15) + 'px';
+                // Crear corazones para cada explosión
+                const heartsPerExplosion = 30; // Más corazones por explosión
                 
-                // Color rosado
-                heart.style.color = '#ff6b9d';
-                heart.style.filter = `drop-shadow(0 0 ${Math.random() * 5 + 5}px rgba(255, 107, 157, 0.6))`;
-                
-                // Retraso aleatorio
-                heart.style.animationDelay = Math.random() * 0.5 + 's';
-                
-                confettiContainer.appendChild(heart);
-                
-                // Eliminar después de la animación
-                setTimeout(() => heart.remove(), 3500);
+                setTimeout(() => {
+                    for (let i = 0; i < heartsPerExplosion; i++) {
+                        const heart = document.createElement('div');
+                        heart.className = 'confetti-heart firework';
+                        heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                        
+                        // Posición inicial en el centro de la explosión
+                        heart.style.left = explosionX + 'px';
+                        heart.style.top = explosionY + 'px';
+                        heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                        
+                        // Calcular trayectoria de expansión circular
+                        const angle = (Math.PI * 2 * i) / heartsPerExplosion + (Math.random() * 0.5);
+                        const velocity = Math.random() * 200 + 100; // Distancia de expansión más rápida
+                        const finalVelocity = velocity * 2.5; // Distancia final más lejos
+                        
+                        // Posiciones intermedias y finales
+                        const tx1 = Math.cos(angle) * velocity;
+                        const ty1 = Math.sin(angle) * velocity * 0.8; // Menos altura inicial
+                        const tx2 = Math.cos(angle) * finalVelocity;
+                        const ty2 = Math.sin(angle) * finalVelocity * 0.5 + 500; // Caída más pronunciada
+                        
+                        // Aplicar variables CSS para la animación
+                        heart.style.setProperty('--tx1', tx1 + 'px');
+                        heart.style.setProperty('--ty1', ty1 + 'px');
+                        heart.style.setProperty('--tx2', tx2 + 'px');
+                        heart.style.setProperty('--ty2', ty2 + 'px');
+                        
+                        // Colores variados
+                        const colors = ['#ff6b9d', '#ff5e78', '#ff9ff3', '#feca57', '#ff6348'];
+                        heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+                        heart.style.filter = `drop-shadow(0 0 ${Math.random() * 15 + 5}px currentColor)`;
+                        
+                        // Retraso aleatorio para cada corazón
+                        heart.style.animationDelay = (Math.random() * 0.4) + 's';
+                        
+                        confettiContainer.appendChild(heart);
+                    }
+                }, e * 300); // Retraso entre explosiones
             }
+            
+            // Limpiar después de la animación
+            setTimeout(() => {
+                confettiContainer.innerHTML = '';
+            }, 8000); // Más tiempo antes de limpiar
         }
 
         // Abrir modal de foto con animación de expansión
@@ -1173,17 +1231,23 @@
             isFlipped = false;
             
             image.src = misRecuerdos[index].foto;
-            message.textContent = misRecuerdos[index].mensaje;
+            
+            // Separar el texto del emoji para mantener el color original del emoji
+            const mensajeCompleto = misRecuerdos[index].mensaje;
+            const partes = mensajeCompleto.match(/(.*?)(\s*[^\s\w]+)$/);
+            
+            if (partes && partes.length > 2) {
+                message.innerHTML = `${partes[1]}<span class="emoji">${partes[2]}</span>`;
+            } else {
+                message.textContent = mensajeCompleto;
+            }
             
             modal.classList.add('active');
             
-            // Crear corazones cayendo cuando se abre el modal
+            // Crear fuegos artificiales de corazones cuando se abre el modal
             setTimeout(() => {
-                const rect = container.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-                createFallingHearts(centerX, centerY);
-            }, 400);
+                createFireworkHearts();
+            }, 200);
         }
 
         // Manejar click en el modal
@@ -1197,11 +1261,8 @@
                 flip.classList.add('flipped');
                 isFlipped = true;
                 
-                // Crear corazones cayendo al voltear
-                const rect = e.currentTarget.getBoundingClientRect();
-                const clickX = e.clientX || rect.left + rect.width / 2;
-                const clickY = e.clientY || rect.top + rect.height / 2;
-                createFallingHearts(clickX, clickY);
+                // Crear explosión masiva de fuegos artificiales al voltear
+                createFireworkHearts();
             } else {
                 closePhotoModal();
             }
@@ -1283,62 +1344,38 @@
             }, 500);
         }
 
-        // Función mejorada para hacer que el botón "No" se escape
+        // Función mejorada para hacer que el botón "No" se escape por toda la pantalla
         function makeButtonEscape(buttonId) {
             const button = document.getElementById(buttonId);
-            const modal = button.closest('.modal-content');
             
             function moveButton() {
-                const modalRect = modal.getBoundingClientRect();
+                // Obtener dimensiones de la ventana
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
                 const buttonRect = button.getBoundingClientRect();
                 
-                // Obtener todos los elementos de texto en el modal
-                const textElements = modal.querySelectorAll('h2, p');
-                const occupiedAreas = [];
+                // Calcular posición aleatoria en toda la pantalla
+                const maxX = windowWidth - buttonRect.width - 20; // 20px de margen
+                const maxY = windowHeight - buttonRect.height - 20;
                 
-                textElements.forEach(el => {
-                    const rect = el.getBoundingClientRect();
-                    occupiedAreas.push({
-                        left: rect.left - modalRect.left,
-                        right: rect.right - modalRect.left,
-                        top: rect.top - modalRect.top,
-                        bottom: rect.bottom - modalRect.top
-                    });
-                });
+                const randomX = Math.random() * maxX + 10;
+                const randomY = Math.random() * maxY + 10;
                 
-                // Intentar encontrar una posición válida
-                let validPosition = false;
-                let attempts = 0;
-                let randomX, randomY;
-                
-                while (!validPosition && attempts < 50) {
-                    randomX = Math.random() * (modalRect.width - buttonRect.width);
-                    randomY = Math.random() * (modalRect.height - buttonRect.height);
-                    
-                    validPosition = true;
-                    
-                    // Verificar que no se superponga con el texto
-                    for (let area of occupiedAreas) {
-                        if (randomX < area.right && 
-                            randomX + buttonRect.width > area.left &&
-                            randomY < area.bottom && 
-                            randomY + buttonRect.height > area.top) {
-                            validPosition = false;
-                            break;
-                        }
-                    }
-                    
-                    attempts++;
-                }
-                
-                button.style.position = 'absolute';
+                button.style.position = 'fixed';
                 button.style.left = randomX + 'px';
                 button.style.top = randomY + 'px';
+                button.style.zIndex = '1001';
                 button.classList.add('escape');
             }
             
             button.addEventListener('mouseenter', moveButton);
             button.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                moveButton();
+            });
+            
+            // También mover cuando se intente hacer clic
+            button.addEventListener('click', function(e) {
                 e.preventDefault();
                 moveButton();
             });
