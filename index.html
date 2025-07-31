@@ -35,7 +35,7 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #2c1810 0%, #8b4513 50%, #d2691e 100%);
+            background: linear-gradient(135deg, #2d1b69 0%, #0f3460 50%, #e94560 100%);
             min-height: 100vh;
             min-height: -webkit-fill-available;
             display: flex;
@@ -52,7 +52,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 100%);
+            background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.3) 100%);
             pointer-events: none;
             z-index: 1;
         }
@@ -79,7 +79,7 @@
             font-family: 'Playfair Display', serif;
             font-size: 36px;
             margin-bottom: 20px;
-            background: linear-gradient(45deg, #ffd700, #ffed4b);
+            background: linear-gradient(45deg, #ff6b9d, #feca57, #ff9ff3);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
@@ -93,14 +93,14 @@
         }
 
         .fullscreen-button {
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4b 100%);
-            color: #1a1a2e;
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff9ff3 100%);
+            color: white;
             border: none;
             padding: 18px 45px;
             font-size: 18px;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
             transition: all 0.3s ease;
             font-weight: 600;
             text-transform: uppercase;
@@ -109,7 +109,7 @@
 
         .fullscreen-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.4);
         }
 
         .fullscreen-button:active {
@@ -127,61 +127,66 @@
             z-index: 2;
         }
 
-        .envelope {
+        /* Corazón principal en lugar del sobre */
+        .heart-container {
             position: relative;
-            width: 300px;
-            height: 200px;
+            width: 250px;
+            height: 250px;
             margin: 0 auto;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
-        .envelope:hover {
-            transform: scale(1.05) translateY(-5px);
+        .heart-container:hover {
+            transform: scale(1.1);
         }
 
-        .envelope-body {
-            position: absolute;
+        .main-heart {
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
-            border-radius: 10px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-            border: 2px solid #d4af37;
+            position: relative;
+            transform: rotate(-45deg);
+            animation: heartPulse 2s ease-in-out infinite;
         }
 
-        .envelope-flap {
+        .main-heart::before,
+        .main-heart::after {
+            content: '';
+            width: 200px;
+            height: 300px;
             position: absolute;
-            width: 0;
-            height: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            border-top: 100px solid #d4af37;
+            left: 100px;
             top: 0;
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff9ff3 100%);
+            border-radius: 100px 100px 0 0;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+            box-shadow: 0 20px 60px rgba(255, 107, 157, 0.4);
+        }
+
+        .main-heart::after {
             left: 0;
-            transform-origin: top center;
-            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+            background: linear-gradient(135deg, #ff9ff3 0%, #ff6b9d 100%);
         }
 
-        .envelope.open .envelope-flap {
-            transform: rotateX(180deg);
+        @keyframes heartPulse {
+            0%, 100% { transform: rotate(-45deg) scale(1); }
+            50% { transform: rotate(-45deg) scale(1.1); }
         }
 
-        .heart {
+        .heart-text {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 50px;
-            color: #d4af37;
-            animation: elegantBeat 2s ease-in-out infinite;
-            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.5));
-        }
-
-        @keyframes elegantBeat {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.15); }
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            z-index: 10;
+            pointer-events: none;
         }
 
         .modal {
@@ -207,7 +212,8 @@
             width: 90%;
             animation: modalSlideIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            border: 1px solid rgba(212, 175, 55, 0.3);
+            border: 1px solid rgba(255, 107, 157, 0.3);
+            position: relative;
         }
 
         @keyframes modalSlideIn {
@@ -223,7 +229,7 @@
 
         .modal h2 {
             font-family: 'Playfair Display', serif;
-            background: linear-gradient(45deg, #ffd700, #ffed4b);
+            background: linear-gradient(45deg, #ff6b9d, #ff9ff3);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 25px;
@@ -251,26 +257,26 @@
         }
 
         .btn-yes {
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4b 100%);
-            color: #1a1a2e;
-            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff9ff3 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(255, 107, 157, 0.4);
         }
 
         .btn-yes:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5);
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.5);
         }
 
         .btn-no {
             background: transparent;
-            color: #ffd700;
-            border: 2px solid #ffd700;
+            color: #ff9ff3;
+            border: 2px solid #ff9ff3;
             position: relative;
-            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.2);
+            box-shadow: 0 5px 20px rgba(255, 159, 243, 0.2);
         }
 
         .btn-no:hover {
-            background: rgba(255, 215, 0, 0.1);
+            background: rgba(255, 159, 243, 0.1);
         }
 
         .btn-no.escape {
@@ -294,11 +300,11 @@
         .letter-content {
             max-width: 900px;
             margin: 0 auto;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffe0ec 100%);
             padding: 50px;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            border: 1px solid rgba(212, 175, 55, 0.3);
+            border: 1px solid rgba(255, 107, 157, 0.3);
         }
 
         .letter-header {
@@ -308,7 +314,7 @@
 
         .letter-header h1 {
             font-family: 'Playfair Display', serif;
-            background: linear-gradient(135deg, #d4af37 0%, #f4e4bc 50%, #d4af37 100%);
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff9ff3 50%, #ff6b9d 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-size: 42px;
@@ -317,7 +323,7 @@
         }
 
         .date {
-            color: #6c757d;
+            color: #666;
             font-size: 20px;
             font-style: italic;
             font-weight: 300;
@@ -484,7 +490,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 107, 157, 0.1) 0%, transparent 70%);
             animation: elegantShimmer 4s linear infinite;
         }
 
@@ -495,7 +501,7 @@
 
         .modal-message {
             font-family: 'Playfair Display', serif;
-            color: #ffd700;
+            color: #ff9ff3;
             text-align: center;
             font-size: 28px;
             font-weight: 400;
@@ -507,8 +513,8 @@
             max-width: 600px;
         }
 
-        /* Partículas doradas elegantes */
-        .golden-particles {
+        /* Partículas rosadas elegantes */
+        .pink-particles {
             position: fixed;
             width: 100%;
             height: 100%;
@@ -519,7 +525,7 @@
 
         .particle {
             position: absolute;
-            background: radial-gradient(circle, #ffd700 0%, transparent 70%);
+            background: radial-gradient(circle, #ff9ff3 0%, transparent 70%);
             border-radius: 50%;
             opacity: 0;
             animation: particleFloat 15s linear infinite;
@@ -556,7 +562,7 @@
         .confetti-heart {
             position: absolute;
             font-size: 30px;
-            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));
+            filter: drop-shadow(0 0 10px rgba(255, 107, 157, 0.8));
             pointer-events: none;
         }
 
@@ -587,15 +593,15 @@
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4b 100%);
-            color: #1a1a2e;
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff9ff3 100%);
+            color: white;
             border: none;
             border-radius: 50%;
             width: 70px;
             height: 70px;
             font-size: 30px;
             cursor: pointer;
-            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.5);
             transition: all 0.3s ease;
             z-index: 4000;
             display: none;
@@ -603,8 +609,8 @@
         }
 
         @keyframes elegantPulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5); }
-            50% { transform: scale(1.1); box-shadow: 0 15px 40px rgba(255, 215, 0, 0.7); }
+            0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(255, 107, 157, 0.5); }
+            50% { transform: scale(1.1); box-shadow: 0 15px 40px rgba(255, 107, 157, 0.7); }
         }
 
         .play-button:hover {
@@ -617,14 +623,14 @@
             bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4b 100%);
-            color: #1a1a2e;
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff9ff3 100%);
+            color: white;
             padding: 15px 30px;
             border-radius: 30px;
             font-size: 16px;
             cursor: pointer;
             z-index: 5000;
-            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.5);
             animation: elegantPulse 2s infinite;
             display: none;
             font-weight: 600;
@@ -659,7 +665,7 @@
             position: absolute;
             width: 20px;
             height: 2px;
-            background: #ffd700;
+            background: #ff9ff3;
             border-radius: 2px;
         }
 
@@ -693,6 +699,23 @@
             .modal-photo-container {
                 height: 70vh;
             }
+
+            .heart-container {
+                width: 200px;
+                height: 200px;
+            }
+
+            .main-heart::before,
+            .main-heart::after {
+                width: 160px;
+                height: 240px;
+                left: 80px;
+                border-radius: 80px 80px 0 0;
+            }
+
+            .main-heart::after {
+                left: 0;
+            }
         }
 
         /* iOS specific fixes */
@@ -706,19 +729,18 @@
 <body>
     <!-- Pantalla de bienvenida con botón de pantalla completa -->
     <div class="fullscreen-prompt" id="fullscreenPrompt">
-        <h1>✨ Un Regalo Especial Para Ti ✨</h1>
+        <h1>💖 Un Regalo Especial Para Ti 💖</h1>
         <p>Prepárate para una experiencia única</p>
         <button class="fullscreen-button" onclick="startExperience()">Comenzar</button>
     </div>
 
-    <div class="golden-particles" id="goldenParticles"></div>
+    <div class="pink-particles" id="pinkParticles"></div>
     <div class="heart-confetti" id="heartConfetti"></div>
     
     <div class="container" id="mainContainer" class="hidden">
-        <div class="envelope" id="envelope">
-            <div class="envelope-body"></div>
-            <div class="envelope-flap"></div>
-            <div class="heart">✉️</div>
+        <div class="heart-container" id="heartContainer">
+            <div class="main-heart"></div>
+            <div class="heart-text">Click Me</div>
         </div>
     </div>
 
@@ -765,14 +787,14 @@
                 <p style="animation-delay: 0.5s;">Hoy celebramos un mes más juntos, y cada día que pasa me siento más afortunado de tenerte en mi vida. Has llenado mis días de alegría, risas y amor incondicional.</p>
                 <p style="animation-delay: 1s;">Estos 22 meses han sido los más hermosos de mi vida. Cada momento a tu lado es un tesoro que guardo en mi corazón. Tu sonrisa ilumina mis días y tu amor me da fuerzas para ser mejor persona.</p>
                 <p style="animation-delay: 1.5s;">Gracias por ser mi compañera, mi mejor amiga, mi todo. Te amo con cada fibra de mi ser y prometo seguir amándote cada día más.</p>
-                <p style="animation-delay: 2s;">Aquí te dejo 26 fotografías de nuestros momentos más preciados. Cada imagen guarda un mensaje especial que escribí pensando en ti. 💛</p>
+                <p style="animation-delay: 2s;">Aquí te dejo 26 fotografías de nuestros momentos más preciados. Cada imagen guarda un mensaje especial que escribí pensando en ti. 💖</p>
             </div>
 
             <div class="photo-gallery" id="photoGallery">
                 <!-- Las fotos se generarán dinámicamente -->
             </div>
 
-            <p style="text-align: center; font-size: 28px; color: #d4af37; margin-top: 50px; font-family: 'Playfair Display', serif; font-style: italic;">
+            <p style="text-align: center; font-size: 28px; color: #ff6b9d; margin-top: 50px; font-family: 'Playfair Display', serif; font-style: italic;">
                 Feliz Mesario mi Preciosa, espero te haya gustado. TE AMO
             </p>
         </div>
@@ -828,8 +850,8 @@
             document.getElementById('fullscreenPrompt').classList.add('hidden');
             document.getElementById('mainContainer').classList.remove('hidden');
             
-            // Iniciar partículas doradas
-            createGoldenParticles();
+            // Iniciar partículas rosadas
+            createPinkParticles();
         }
 
         // Solicitar pantalla completa
@@ -880,9 +902,9 @@
             deferredPrompt = null;
         }
 
-        // Crear partículas doradas
-        function createGoldenParticles() {
-            const container = document.getElementById('goldenParticles');
+        // Crear partículas rosadas
+        function createPinkParticles() {
+            const container = document.getElementById('pinkParticles');
             
             setInterval(() => {
                 const particle = document.createElement('div');
@@ -906,7 +928,7 @@
             window.addEventListener('load', () => {
                 document.getElementById('fullscreenPrompt').classList.add('hidden');
                 document.getElementById('mainContainer').classList.remove('hidden');
-                createGoldenParticles();
+                createPinkParticles();
             });
         }
 
@@ -1031,7 +1053,7 @@
                 photoItem.className = 'photo-item';
                 photoItem.innerHTML = `
                     <img src="${recuerdo.foto}" alt="Foto ${index + 1}" 
-                         onerror="this.src='https://via.placeholder.com/300x400/1a1a2e/ffd700?text=Foto+${index + 1}'">
+                         onerror="this.src='https://via.placeholder.com/300x400/ff6b9d/ffffff?text=Foto+${index + 1}'">
                 `;
                 photoItem.onclick = function(e) {
                     // Guardar la posición del elemento clickeado
@@ -1054,7 +1076,7 @@
         // Crear efecto de confeti de corazones tipo fuegos artificiales
         function createHeartConfetti(x, y, type = 'normal') {
             const confettiContainer = document.getElementById('heartConfetti');
-            const hearts = ['💛', '✨', '⭐', '💫', '🌟'];
+            const hearts = ['💖', '💕', '💗', '💝', '💘'];
             
             // Limpiar confeti anterior
             confettiContainer.innerHTML = '';
@@ -1083,9 +1105,9 @@
                 heart.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
                 heart.style.setProperty('--rotation', rotationSpeed + 'deg');
                 
-                // Color dorado
-                heart.style.color = '#ffd700';
-                heart.style.filter = `drop-shadow(0 0 ${Math.random() * 20 + 10}px rgba(255, 215, 0, 0.8))`;
+                // Color rosado
+                heart.style.color = '#ff6b9d';
+                heart.style.filter = `drop-shadow(0 0 ${Math.random() * 20 + 10}px rgba(255, 107, 157, 0.8))`;
                 
                 confettiContainer.appendChild(heart);
                 
@@ -1220,8 +1242,8 @@
             });
         }
 
-        // Eventos del sobre
-        document.getElementById('envelope').addEventListener('click', function() {
+        // Eventos del corazón
+        document.getElementById('heartContainer').addEventListener('click', function() {
             document.getElementById('modal1').style.display = 'flex';
         });
 
@@ -1238,7 +1260,11 @@
 
         function openLetter() {
             document.getElementById('modal3').style.display = 'none';
-            document.getElementById('envelope').classList.add('open');
+            
+            // Animar el corazón antes de abrir la carta
+            const heart = document.getElementById('heartContainer');
+            heart.style.transform = 'scale(1.5)';
+            heart.style.opacity = '0';
             
             setTimeout(() => {
                 document.getElementById('letterContainer').style.display = 'block';
@@ -1257,17 +1283,32 @@
             }, 500);
         }
 
-        // Función para hacer que el botón "No" se escape
+        // Función mejorada para hacer que el botón "No" se escape
         function makeButtonEscape(buttonId) {
             const button = document.getElementById(buttonId);
+            const modal = button.closest('.modal-content');
             
             function moveButton() {
-                const maxX = window.innerWidth - button.offsetWidth - 40;
-                const maxY = window.innerHeight - button.offsetHeight - 40;
-                const randomX = Math.random() * maxX;
-                const randomY = Math.random() * maxY;
+                const modalRect = modal.getBoundingClientRect();
+                const buttonRect = button.getBoundingClientRect();
                 
-                button.style.position = 'fixed';
+                // Calcular límites seguros considerando el tamaño del modal y del botón
+                const safeZoneX = 40; // Margen desde los bordes
+                const safeZoneY = 80; // Margen mayor arriba para evitar el título
+                
+                const maxX = modalRect.width - buttonRect.width - safeZoneX;
+                const maxY = modalRect.height - buttonRect.height - safeZoneY;
+                
+                // Generar posición aleatoria pero evitando el área del título
+                let randomX = Math.random() * maxX;
+                let randomY = Math.random() * maxY + safeZoneY;
+                
+                // Asegurarse de que no se superponga con el título (parte superior del modal)
+                if (randomY < 100) {
+                    randomY = 100;
+                }
+                
+                button.style.position = 'absolute';
                 button.style.left = randomX + 'px';
                 button.style.top = randomY + 'px';
                 button.classList.add('escape');
