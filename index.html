@@ -1220,7 +1220,8 @@
             const container = document.getElementById('heartRain');
             const hearts = ['💖', '💕', '💗', '💝', '💘', '❤️', '💞', '💓'];
             
-            heartRainInterval = setInterval(() => {
+            // Crear corazones inmediatamente al llamar la función
+            function createHeartBatch() {
                 // Crear solo 2 o 3 corazones por vez
                 const numHearts = Math.random() > 0.5 ? 2 : 3;
                 
@@ -1254,7 +1255,13 @@
                         setTimeout(() => heart.remove(), duration * 1000);
                     }, i * 700); // Retraso mayor entre corazones
                 }
-            }, 2500); // Nuevos corazones cada 2.5 segundos (más espaciado)
+            }
+            
+            // Crear el primer grupo inmediatamente
+            createHeartBatch();
+            
+            // Luego continuar creando grupos cada 2.5 segundos
+            heartRainInterval = setInterval(createHeartBatch, 2500);
         }
 
         // Explotar corazón en mini corazones
