@@ -252,6 +252,14 @@
             text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
         }
 
+        /* Clase especial para el emoji en el h2 del modal 3 */
+        .modal h2 .emoji-real {
+            -webkit-text-fill-color: initial;
+            background: none;
+            filter: none;
+            text-shadow: none;
+        }
+
         .button-group {
             display: flex;
             gap: 20px;
@@ -904,7 +912,7 @@
     <!-- Modal 3 -->
     <div class="modal" id="modal3">
         <div class="modal-content">
-            <h2>Entonces abramos este tesoro 💎</h2>
+            <h2>Entonces abramos este tesoro <span class="emoji-real">💎</span></h2>
             <button class="btn-yes" onclick="openLetter()">Abrir</button>
         </div>
     </div>
